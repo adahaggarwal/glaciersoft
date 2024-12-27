@@ -49,17 +49,17 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
-        // Initialize Places API
+
         if (!Places.isInitialized()) {
             Places.initialize(getApplicationContext(), "AIzaSyCN3ggNnAOp-rLmDbWNFk4UuG2_lZ9K-CQ");
         }
 
-        // Initialize map fragment
+
         SupportMapFragment mapFragment = (SupportMapFragment) getSupportFragmentManager()
                 .findFragmentById(R.id.map);
         mapFragment.getMapAsync(this);
 
-        // Initialize source autocomplete
+
         AutocompleteSupportFragment sourceAutoComplete = (AutocompleteSupportFragment)
                 getSupportFragmentManager().findFragmentById(R.id.autocomplete_source);
 
@@ -83,7 +83,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
             }
         });
 
-        // Initialize destination autocomplete
+
         AutocompleteSupportFragment destAutoComplete = (AutocompleteSupportFragment)
                 getSupportFragmentManager().findFragmentById(R.id.autocomplete_destination);
 
@@ -107,7 +107,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
             }
         });
 
-        // Initialize route button
+
         btnShowRoute = findViewById(R.id.btnShowRoute);
         btnShowRoute.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -143,7 +143,7 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
 
     private void drawRoute() {
         try {
-            // Create URL for directions API request using LatLng
+
             String urlString = "https://maps.googleapis.com/maps/api/directions/json?" +
                     "origin=" + sourceLatLng.latitude + "," + sourceLatLng.longitude +
                     "&destination=" + destLatLng.latitude + "," + destLatLng.longitude +
@@ -166,14 +166,13 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
             JSONObject route = jsonResponse.getJSONArray("routes").getJSONObject(0);
             String encodedPolyline = route.getJSONObject("overview_polyline").getString("points");
 
-            // Decode polyline points
             List<LatLng> decodedPath = decodePolyline(encodedPolyline);
 
-            // Draw the route on the map
+
             runOnUiThread(new Runnable() {
                 @Override
                 public void run() {
-                    mMap.clear(); // Clear previous routes and markers
+                    mMap.clear();
 
                     PolylineOptions options = new PolylineOptions()
                             .addAll(decodedPath)
@@ -181,11 +180,9 @@ public class MainActivity extends AppCompatActivity implements OnMapReadyCallbac
                             .width(10);
                     mMap.addPolyline(options);
 
-                    // Add markers for source and destination
                     mMap.addMarker(new MarkerOptions().position(sourceLatLng).title("Source"));
                     mMap.addMarker(new MarkerOptions().position(destLatLng).title("Destination"));
 
-                    // Adjust camera to show the entire route
                     LatLngBounds.Builder builder = new LatLngBounds.Builder();
                     for (LatLng point : decodedPath) {
                         builder.include(point);
